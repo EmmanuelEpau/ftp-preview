@@ -583,6 +583,7 @@ body[data-header="overlay"] .site-header.menu-open .logo-dark { display: none; }
   color: var(--fg);
 }
 .band--light .label { color: var(--fg-muted); }
+html { scroll-padding-top: calc(var(--header-h) + 16px); }
 
 /* /assets/theme/css/home-hero.css */
 .home-hero.hh {

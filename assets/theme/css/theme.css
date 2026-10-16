@@ -595,3 +595,6 @@ body[data-header="overlay"] .site-header.menu-open .logo-dark { display: none; }
   color: var(--fg);
 }
 .band--light .label { color: var(--fg-muted); }
+
+/* A link to a spot on a page (/careers#internships) lands below the sticky header, not under it. */
+html { scroll-padding-top: calc(var(--header-h) + 16px); }
