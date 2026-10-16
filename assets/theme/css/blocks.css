@@ -1,0 +1,301 @@
+/*
+  blocks.css: the look of the content blocks (giving, screenings, questions,
+  about the film, related, posts, featured film, closing ask, contact,
+  downloads, gallery, cards, campaign pitch). Part stylesheet of the Family
+  Theater theme; theme.css loads first and holds the tokens this file uses.
+
+  Rules it follows (docs/design-direction.md):
+  - 60-30-10. Black is the ground; raised bands and frosted glass panels are
+    the lighter layer; gold is one thing per screen, blue the small second
+    accent (link hover, focus ring).
+  - Calluna 400 for headings (never faux-bold); Whitney for everything else.
+  - Nothing boxed in a flat grey rectangle. Cards are frosted panels with a
+    thin line border, a 6px radius and a hover lift, or they are picture-led.
+  - Thin 1.5px line icons only.
+  - Every colour goes through a token so body[data-tone="light"] still works.
+
+  Every block root carries the class .blk, so these rules only touch blocks
+  and never the header, footer, heroes or rails.
+*/
+
+/* ---------- Tokens for blocks: dark first, light rewrites them ---------- */
+.blk {
+  --r: 6px;                                  /* radius for pictures, tiles and buttons */
+  --panel: var(--glass);                     /* frosted panel fill */
+  --panel-strong: var(--glass-strong);       /* a stronger fill for buttons on glass */
+  --panel-line: var(--glass-line);           /* the hairline around a panel */
+  --panel-input: rgba(0, 0, 0, .28);         /* input fill inside a panel */
+  --panel-sheen: rgba(255, 255, 255, .08);   /* the light catching the top edge */
+  --tile-shadow: 0 28px 56px -28px rgba(0, 0, 0, .85);
+  --panel-shadow: 0 40px 80px -48px rgba(0, 0, 0, .8);
+  --link-hover: var(--blue-soft);
+  --glow: color-mix(in srgb, var(--blue) 22%, transparent);
+}
+body[data-tone="light"] .blk {
+  --panel: rgba(255, 255, 255, .8);
+  --panel-strong: #FFFFFF;
+  --panel-line: var(--line);
+  --panel-input: #FFFFFF;
+  --panel-sheen: rgba(255, 255, 255, .9);
+  --tile-shadow: 0 24px 40px -24px rgba(0, 0, 0, .28);
+  --panel-shadow: 0 32px 64px -40px rgba(0, 0, 0, .3);
+  --link-hover: var(--blue);
+  --glow: color-mix(in srgb, var(--blue) 9%, transparent);
+}
+/* A photo band is always dark, whatever the page tone. */
+.blk.blk[data-tone="dark"] {
+  --panel: var(--glass);
+  --panel-strong: var(--glass-strong);
+  --panel-line: var(--glass-line);
+  --panel-input: rgba(0, 0, 0, .28);
+  --panel-sheen: rgba(255, 255, 255, .08);
+  --tile-shadow: 0 28px 56px -28px rgba(0, 0, 0, .85);
+  --panel-shadow: 0 40px 80px -48px rgba(0, 0, 0, .8);
+  --link-hover: var(--blue-soft);
+}
+.blk.band { overflow: clip; }                 /* clips the soft glow without breaking sticky children */
+
+/* ---------- Type inside blocks ---------- */
+.blk :is(h1, h2, h3, .h3) { font-family: var(--serif); font-weight: 400; letter-spacing: 0; }
+.blk .h3 { font-size: var(--fs-h3); line-height: 1.25; }
+.blk :is(h4, .h4) { font-family: var(--sans); font-weight: 600; font-size: var(--fs-body); }
+.blk .label { font-weight: 500; letter-spacing: .1em; }
+.blk .section-head { margin-bottom: var(--s-7); }
+.blk .section-head .more { font-weight: 500; text-decoration: none; color: var(--fg); border-bottom: 1px solid color-mix(in srgb, currentColor 35%, transparent); }
+.blk .section-head .more:hover { color: var(--link-hover); border-color: currentColor; }
+
+/* ---------- Frosted glass panel ---------- */
+.blk .glass-panel {
+  position: relative;
+  padding: clamp(22px, 2.6vw, 40px);
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: 12px;
+  -webkit-backdrop-filter: blur(14px) saturate(130%); backdrop-filter: blur(14px) saturate(130%);
+  box-shadow: inset 0 1px 0 var(--panel-sheen), var(--panel-shadow);
+}
+.blk .glass-panel--sm { padding: var(--s-5); }
+.blk .glass-panel > :last-child { margin-bottom: 0; }
+/* Inputs sitting on glass take the panel's own fill and hairline. */
+.blk .glass-panel :is(input, select, textarea):not([type="radio"]):not([type="checkbox"]) { background: var(--panel-input); border: 1px solid var(--panel-line); border-radius: var(--r); color: var(--fg); }
+.blk .glass-panel :is(input, select, textarea):focus-visible { outline: 2px solid var(--link-hover); outline-offset: 2px; border-color: transparent; }
+.blk .glass-panel select { -webkit-appearance: none; appearance: none; padding-right: 40px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; background-size: 18px; }
+.blk .glass-panel select option { color: var(--ink); background: #fff; }
+.blk .glass-panel .field label, .blk .glass-panel legend { font-weight: 500; font-size: var(--fs-small); color: var(--fg-muted); }
+
+/* ---------- Buttons and links ---------- */
+.blk .btn { border-radius: var(--r); font-weight: 500; }
+.blk .btn-gold { background: var(--gold); color: var(--dark); border-color: var(--gold); }
+.blk .btn-gold:hover, .blk .btn-gold:focus-visible { filter: brightness(1.06); transform: translateY(-1px); }
+.blk .btn-glass { background: var(--panel-strong); color: var(--fg); border: 1px solid var(--panel-line); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.blk .btn-glass:hover { background: color-mix(in srgb, var(--fg) 20%, transparent); border-color: color-mix(in srgb, var(--fg) 40%, transparent); }
+body[data-tone="light"] .blk .btn-glass { background: var(--ink); color: #fff; border-color: var(--ink); }
+body[data-tone="light"] .blk .btn-glass:hover { background: #000; }
+.blk .btn-secondary { border-width: 1px; border-color: color-mix(in srgb, currentColor 45%, transparent); }
+.blk .btn-secondary:hover { border-color: currentColor; background: color-mix(in srgb, currentColor 8%, transparent); }
+.blk .text-link { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; font-size: var(--fs-small); text-decoration: none; color: var(--fg); padding-bottom: 2px; border-bottom: 1px solid color-mix(in srgb, currentColor 35%, transparent); transition: color var(--fast) var(--ease), border-color var(--fast) var(--ease); }
+.blk .text-link:hover, .blk .text-link:focus-visible { color: var(--link-hover); border-color: currentColor; }
+.blk .text-link .muted { font-weight: 400; }
+.blk .prose a:hover { color: var(--link-hover); }
+
+/* ---------- Line icons (1.5px stroke, never filled) ---------- */
+.blk .line-icon { display: inline-grid; place-items: center; width: 28px; height: 28px; color: var(--fg-muted); }
+.blk .line-icon svg, .blk svg.line-icon { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.blk .line-icon svg { width: 24px; height: 24px; }
+.blk svg.line-icon--sm { display: inline-block; width: 16px; height: 16px; margin-right: 6px; vertical-align: -3px; color: var(--fg-muted); }
+
+/* ---------- Tiles: picture-led or frosted, 6px radius, hover lift ---------- */
+.blk .tile { position: relative; display: grid; align-content: start; border-radius: var(--r); transition: transform var(--base) var(--ease), box-shadow var(--base) var(--ease), border-color var(--base) var(--ease); }
+.blk .tile:hover, .blk .tile:focus-within { transform: translateY(-4px); }
+.blk .tile--panel { background: var(--panel); border: 1px solid var(--panel-line); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); overflow: hidden; box-shadow: inset 0 1px 0 var(--panel-sheen); }
+.blk .tile--panel:hover, .blk .tile--panel:focus-within { box-shadow: inset 0 1px 0 var(--panel-sheen), var(--tile-shadow); border-color: color-mix(in srgb, var(--fg) 28%, transparent); }
+.blk .tile:not(.tile--panel):hover .still, .blk .tile:not(.tile--panel):focus-within .still { box-shadow: var(--tile-shadow); }
+.blk .tile-text { display: grid; gap: var(--s-2); align-content: start; }
+.blk .tile--panel .tile-text { padding: var(--s-5); }
+.blk .tile:not(.tile--panel) .tile-text { padding-top: var(--s-3); }
+.blk .tile-text > * { margin: 0; }
+.blk .tile-text h3 { font-size: var(--fs-h3); line-height: 1.25; }
+.blk .tile-text .prose { color: var(--fg-muted); }
+.blk .tile-text .prose p:last-child { margin-bottom: 0; }
+.blk .tile-text .text-link, .blk .tile-text .chip { justify-self: start; margin-top: var(--s-2); }
+.blk .tile h3 a { text-decoration: none; color: inherit; }
+.blk .tile:hover h3 a, .blk .related-card:hover h3 { text-decoration: none; }
+.blk .still, .blk .poster, .blk .tile .still { border-radius: var(--r); background: var(--panel); transition: box-shadow var(--base) var(--ease); }
+.blk .tile--panel .still { border-radius: 0; }
+.blk .still img { transition: transform 900ms var(--ease); }
+.blk .tile:hover .still img { transform: scale(1.03); }
+.blk .tile-arrow { position: absolute; right: var(--s-5); bottom: var(--s-5); width: 24px; height: 24px; color: var(--fg-muted); transition: transform var(--base) var(--ease), color var(--base) var(--ease); }
+.blk .tile-arrow svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.blk .tile:hover .tile-arrow { transform: translateX(4px); color: var(--link-hover); }
+.blk .related-card.tile--panel { min-height: 160px; padding-bottom: var(--s-7); }
+.blk .related-card.tile--panel .tile-text { padding-bottom: 0; }
+
+/* ---------- Give: form in a glass panel on a raised band ---------- */
+.blk.giving { position: relative; }
+/* A soft blue light behind the glass, so the blur has something to bend. Blue is the small second accent. */
+.blk.giving::before { content: ""; position: absolute; z-index: 0; right: -6%; top: -10%; width: min(46vw, 620px); aspect-ratio: 1; border-radius: 50%; background: var(--glow); filter: blur(90px); pointer-events: none; }
+.blk.giving > .container { position: relative; z-index: 1; }
+.giving-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 500px); gap: clamp(32px, 6vw, 112px); align-items: start; }
+.giving-text h1 { margin-top: var(--s-3); max-width: 14ch; }
+.giving-text .prose { color: var(--fg-muted); }
+.giving-text .prose p { color: var(--fg); }
+.blk .impacts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); margin: var(--s-6) 0; padding-top: var(--s-5); border-top: 1px solid var(--rule); }
+.blk .impacts dt { font-family: var(--serif); font-size: var(--fs-h2); font-weight: 400; line-height: 1; }
+.blk .impacts dd { margin: var(--s-2) 0 0; font-size: var(--fs-small); color: var(--fg-muted); }
+.blk .giving-card { position: sticky; top: calc(var(--header-h) + var(--s-5)); }
+.blk .giving-card .h3 { margin-bottom: var(--s-1); }
+.blk .giving-card .form-note { margin-bottom: var(--s-5); }
+.blk .giving-frame { width: 100%; min-height: 720px; border: 0; border-radius: var(--r); background: #fff; }
+.giving-standin { display: grid; gap: var(--s-5); }
+.giving-standin [hidden] { display: none !important; }      /* .field is display:grid, which would otherwise show the hidden amount box */
+.giving-standin .field { gap: var(--s-3); }
+.giving-standin #give-other { margin-top: var(--s-2); }
+.giving-standin .btn-lg { width: 100%; margin-top: var(--s-2); }
+.giving-standin .form-foot { margin: 0; text-align: center; }
+
+/* Pills: a radio inside a frosted pill; the chosen one takes a thin gold outline. The native circle is hidden only where :has() works. */
+.blk .pills { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.blk .pill { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; background: var(--panel); border: 1px solid var(--panel-line); color: var(--fg); font-size: var(--fs-small); font-weight: 500; cursor: pointer; transition: background var(--fast) var(--ease), border-color var(--fast) var(--ease), box-shadow var(--fast) var(--ease); }
+.blk .pill:hover { background: var(--panel-strong); border-color: color-mix(in srgb, var(--fg) 35%, transparent); }
+.blk .pill:has(input:checked) { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); background: color-mix(in srgb, var(--gold) 10%, transparent); }
+.blk .pill:has(input:focus-visible) { outline: 2px solid var(--link-hover); outline-offset: 3px; }
+@supports selector(:has(a)) {
+  .blk .pill input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+}
+
+/* ---------- Other ways to give: columns over thin rules, no boxes ---------- */
+.blk .ways { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-6); }
+.blk .way { border-top: 1px solid var(--rule); padding-top: var(--s-5); display: grid; gap: var(--s-3); align-content: start; }
+.blk .way h3 { margin: 0; font-size: var(--fs-h3); }
+.blk .way p { margin: 0; color: var(--fg-muted); }
+.blk .way .text-link { justify-self: start; }
+@media (max-width: 1100px) { .blk .ways { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------- For groups: tiers as a comparison under one gold rule ---------- */
+.blk .groups-intro { margin-bottom: var(--s-7); }
+.blk .tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); column-gap: var(--s-6); border-top: 1px solid var(--gold); }
+.blk .tier { display: grid; grid-template-rows: auto auto auto 1fr auto; row-gap: var(--s-2); align-content: start; padding: var(--s-5) 0 var(--s-6); }
+@supports (grid-template-rows: subgrid) {
+  .blk .tiers { grid-template-rows: auto auto auto 1fr auto; }
+  .blk .tier { grid-row: span 5; grid-template-rows: subgrid; }
+}
+.blk .tier .label { margin: 0; }
+.blk .tier h3 { margin: 0; font-size: var(--fs-h3); }
+.blk .tier .price { margin: 0; font-family: var(--serif); font-size: var(--fs-h2); line-height: 1; }
+.blk .tier .includes { margin: 0; color: var(--fg-muted); }
+.blk .tier .btn { justify-self: start; align-self: end; margin-top: var(--s-3); }
+.blk .group-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--s-6); margin-top: var(--s-6); }
+.blk .group-item { border-top: 1px solid var(--rule); padding-top: var(--s-5); display: grid; gap: var(--s-2); align-content: start; }
+.blk .group-item h3 { margin: 0; font-size: var(--fs-h3); }
+.blk .group-item p { margin: 0; color: var(--fg-muted); }
+.blk .group-item .text-link, .blk .group-item .btn { justify-self: start; margin-top: var(--s-2); }
+.blk .rights { margin-top: var(--s-7); }
+.blk .screening-request { margin-top: var(--s-7); }
+.blk .screening-request h3 { margin-bottom: var(--s-1); }
+.blk .screening-request > .small { margin-bottom: var(--s-5); }
+.blk .screening-request .form-grid { gap: var(--s-4) var(--s-5); margin-bottom: var(--s-5); }
+
+/* ---------- Questions: a quiet accordion with a line chevron ---------- */
+.blk .questions-head { display: grid; gap: var(--s-4); align-content: start; justify-items: start; }
+.blk .questions-head h2 { margin: 0; }
+.blk .gold-rule { display: block; width: 48px; height: 1px; background: var(--gold); }
+.blk .qa summary::after { content: none; }
+.blk .qa summary { padding: var(--s-5) 0; }
+.blk .qa .chevron { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; color: var(--fg-muted); transition: transform var(--base) var(--ease), color var(--fast) var(--ease); }
+.blk .qa[open] .chevron { transform: rotate(180deg); color: var(--fg); }
+.blk .qa summary:hover .chevron { color: var(--link-hover); }
+.blk .qa summary:hover .qa-q { color: var(--fg); }
+.blk .qa-q { font-size: var(--fs-h3); }
+.blk .qa-a { color: var(--fg-muted); }
+.blk .qa-a a { color: var(--fg); overflow-wrap: anywhere; word-break: break-word; }
+
+/* ---------- About the film ---------- */
+.blk.film-about .lead { margin-bottom: var(--s-5); }
+.blk .film-poster { border-radius: var(--r); box-shadow: 0 32px 64px -32px rgba(0, 0, 0, .85); transition: transform var(--base) var(--ease); }
+.blk .film-poster:hover { transform: translateY(-4px); }
+.blk .where-list .btn { min-width: 220px; justify-content: flex-start; }
+.blk .remind h3 { font-size: var(--fs-h3); margin-bottom: var(--s-3); }
+.blk .remind form { gap: var(--s-3); }
+.blk .credits { border-top-color: var(--rule); }
+
+/* ---------- Featured film: a wide still with a glass panel on it ---------- */
+.blk .featured { position: relative; }
+.blk .featured-media { display: block; position: relative; aspect-ratio: 21 / 9; border-radius: var(--r); overflow: hidden; background: var(--panel); box-shadow: var(--panel-shadow); }
+.blk .featured-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 35%; transition: transform 1400ms var(--ease); }
+.blk .featured:hover .featured-media img { transform: scale(1.025); }
+.blk .featured-shade { position: absolute; inset: 0; background: linear-gradient(to right, rgba(14, 14, 14, .55) 0%, rgba(14, 14, 14, 0) 60%), linear-gradient(to top, rgba(14, 14, 14, .55) 0%, rgba(14, 14, 14, 0) 55%); }
+/* The panel's glass is smoked (dark, not white) so the words read on a bright frame too. */
+.blk .featured-panel { position: absolute; left: clamp(20px, 4vw, 64px); bottom: clamp(20px, 4vw, 64px); width: min(540px, calc(100% - 2 * clamp(20px, 4vw, 64px))); color: var(--on-dark); --fg: var(--on-dark); --fg-muted: rgba(255, 255, 255, .78); --panel: rgba(14, 14, 14, .5); --panel-strong: var(--glass-strong); --panel-line: var(--glass-line); --panel-sheen: rgba(255, 255, 255, .1); --link-hover: var(--blue-soft); }
+.blk .featured-panel.glass-panel { -webkit-backdrop-filter: blur(18px) saturate(120%); backdrop-filter: blur(18px) saturate(120%); }
+.blk .featured-panel .label { margin: 0 0 var(--s-2); }
+.blk .featured-panel h2 { font-size: clamp(30px, 3.1vw, 46px); margin: 0 0 var(--s-3); }
+.blk .featured-panel h2 a { text-decoration: none; color: inherit; }
+.blk .featured-panel h2 a:hover { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
+.blk .featured-summary { margin: 0 0 var(--s-5); line-height: 1.45; max-width: 46ch; }
+.blk .featured-panel .actions { gap: var(--s-4) var(--s-5); }
+@media (max-width: 900px) {
+  .blk .featured-media { aspect-ratio: 16 / 9; }
+  .blk .featured-panel { position: static; width: auto; margin: calc(-1 * var(--s-6)) var(--s-3) 0; }
+  body[data-tone="light"] .blk .featured-panel { --panel: #fff; --panel-strong: #fff; --panel-line: var(--line); --fg: var(--ink); --fg-muted: var(--ink-muted); --link-hover: var(--blue); color: var(--ink); }
+}
+
+/* ---------- Closing ask: raised band, or a photo band with a glass panel ---------- */
+.blk.closing-ask { position: relative; padding-block: var(--section); text-align: center; color: var(--fg); isolation: isolate; }
+.blk.closing-ask:not(.closing-ask--photo) { background: none; }
+.blk.closing-ask.band--raised:not(.closing-ask--photo) { background: var(--surface); }
+[data-tone="dark"] .blk.closing-ask.band--raised:not(.closing-ask--photo) { background: linear-gradient(180deg, var(--dark-surface), var(--dark-raised)); }
+.blk.closing-ask.band--ground:not(.closing-ask--photo) { background: var(--bg); }
+.blk.closing-ask--photo { background: var(--dark); color: var(--on-dark); }
+.blk .closing-media { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
+.blk .closing-media img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+.blk .closing-shade { position: absolute; inset: 0; background: rgba(14, 14, 14, .45); }
+.blk .closing-inner { display: grid; justify-items: center; gap: var(--s-3); max-width: 760px; margin-inline: auto; }
+.blk .closing-inner.glass-panel { padding: clamp(28px, 4vw, 56px); }
+.blk .closing-body h2 { font-size: var(--fs-h1); max-width: 22ch; margin: 0; }
+.blk .closing-body .lead { max-width: 48ch; margin: 0; color: var(--fg-muted); }
+.blk .closing-body .inline-form { justify-content: center; margin-top: var(--s-4); }
+.blk .closing-body .btn-lg { margin-top: var(--s-4); }
+
+/* ---------- Contact ---------- */
+.blk .contact-ways dt { display: flex; align-items: center; gap: 2px; }
+.blk .contact-form h3 { margin-bottom: var(--s-1); }
+.blk .contact-form > .small { margin-bottom: var(--s-5); }
+.blk .contact-form form { gap: var(--s-4); }
+.blk .contact-form .btn { justify-self: start; }
+
+/* ---------- Downloads: rows between thin rules ---------- */
+.blk .download-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+.blk .download { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: var(--s-4) var(--s-5); align-items: center; padding: var(--s-5) 0; border-bottom: 1px solid var(--rule); }
+.blk .download-text { display: grid; gap: 4px; }
+.blk .download-text > * { margin: 0; }
+.blk .download h3 { font-size: var(--fs-h3); }
+.blk .download-text .small { color: var(--fg-muted); }
+.blk .download .btn, .blk .gate summary { margin-top: 0; }
+.blk .gate form { margin-top: var(--s-3); }
+@media (max-width: 600px) { .blk .download { grid-template-columns: 28px minmax(0, 1fr); } .blk .download-action { grid-column: 2; } }
+
+/* ---------- Gallery ---------- */
+.blk .gallery-item figcaption { margin-top: var(--s-2); }
+
+/* ---------- Cards and campaign ---------- */
+.blk.cards-section .tile--panel { height: 100%; }
+.blk .campaign-actions { display: grid; gap: var(--s-4); justify-items: start; align-content: start; padding-top: var(--s-2); }
+.blk .campaign-goal { margin-top: var(--s-5); }
+@media (max-width: 900px) { .blk .campaign-actions .btn { width: 100%; } }
+
+/* ---------- Phones ---------- */
+@media (max-width: 900px) {
+  .giving-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-6); }
+  .blk .giving-card { position: static; }
+  .giving-text h1 { max-width: none; }
+  .blk .glass-panel { padding: var(--s-5); }
+}
+@media (max-width: 767px) {
+  .blk .ways { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  .blk .impacts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .blk .tier + .tier { border-top: 1px solid var(--rule); }
+  .blk .tier { padding-bottom: var(--s-5); }
+  .blk .pill { flex: 1 1 auto; }
+  .blk .where-list .btn { min-width: 0; width: 100%; }
+  .blk .closing-body h2 { font-size: var(--fs-h2); }
+}

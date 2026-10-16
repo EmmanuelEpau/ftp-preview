@@ -1,0 +1,349 @@
+/*
+  catalogue.css: the look of the catalogue, the part of the site that lists films.
+  It styles the poster tile (macros/film.html card), the listing grid with its tab strip
+  (film-grid), the home-page rails (film-rail) and the episode tiles on a series page
+  (episode-rows). It loads after theme.css and overrides the older .film-card, .poster,
+  .rail, .chip and .episode rules there with selectors of equal or higher weight.
+
+  Every colour is a theme token so the same rules work on the dark site and on
+  body[data-tone="light"]. Motion is cut under prefers-reduced-motion.
+*/
+
+/* ==========================================================================
+   1. The poster tile (one film)
+   ========================================================================== */
+
+/* The card is a link: tile on top, title and facts under it. The whole card lifts and grows a little on hover. */
+.film-card {
+  display: grid;
+  gap: var(--s-3);
+  align-content: start;
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--base) var(--ease);
+}
+.film-card:hover,
+.film-card:focus-visible { transform: translateY(-6px) scale(1.03); }
+.film-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 6px; border-radius: 8px; }
+
+/* The tile itself: 2:3 poster (or 1:1 for podcasts), 6 px corners, a soft ring on hover. */
+.film-card .film-tile {
+  position: relative;
+  display: block;
+  aspect-ratio: 2 / 3;
+  border-radius: 6px;
+  overflow: hidden;
+  background: linear-gradient(160deg, var(--glass-strong), transparent), var(--surface);
+  box-shadow: 0 0 0 1px transparent, 0 12px 32px -20px rgba(0, 0, 0, .6);
+  transition: box-shadow var(--base) var(--ease);
+  isolation: isolate;
+}
+.film-card--square .film-tile { aspect-ratio: 1 / 1; }
+.film-card .film-tile img { width: 100%; height: 100%; object-fit: cover; }
+/* theme.css scales the image inside the poster on hover; here the whole card scales instead, so the inner scale is switched off. */
+.film-card:hover .film-tile img,
+.film-card:focus-visible .film-tile img { transform: none; }
+.film-card:hover .film-tile,
+.film-card:focus-visible .film-tile { box-shadow: 0 0 0 1px var(--glass-line), 0 24px 48px -16px rgba(0, 0, 0, .75); }
+body[data-tone="light"] .film-card:hover .film-tile,
+body[data-tone="light"] .film-card:focus-visible .film-tile { box-shadow: 0 0 0 1px var(--line), 0 24px 48px -22px rgba(0, 0, 0, .35); }
+
+/* A title with no poster file yet: its name set in Calluna on a quiet surface. */
+.film-tile .poster-blank { display: grid; place-items: center; width: 100%; height: 100%; padding: var(--s-4); text-align: center; font-family: var(--serif); font-weight: 400; font-size: var(--fs-h3); line-height: 1.2; color: var(--fg); }
+
+/* Title and facts under the tile. Calluna 400 for the title, Whitney muted for the facts. */
+.film-card .film-card-body { display: grid; gap: 4px; padding-inline: 2px; }
+.film-card .film-card-title {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.3;
+  letter-spacing: 0;
+  text-wrap: pretty;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+  transition: text-decoration-color var(--base) var(--ease);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* The gold underline is the one accent on a hovered tile. */
+.film-card:hover .film-card-title,
+.film-card:focus-visible .film-card-title { text-decoration-color: var(--gold); }
+.film-card-facts { display: flex; flex-wrap: wrap; gap: 0 var(--s-2); font-family: var(--sans); font-size: 14px; line-height: 1.4; color: var(--fg-muted); }
+.film-card-facts span + span::before { content: "\00b7"; margin-right: var(--s-2); }
+
+/* The film's one sentence. It is always in the page for readers and search engines;
+   with a mouse it slides up over the bottom of the poster on hover, the way a streaming
+   service shows a line about a title. With a finger it stays hidden from view. */
+.film-tile-caption { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; opacity: 0; }
+@media (hover: hover) and (pointer: fine) {
+  .film-tile-caption {
+    position: absolute !important;
+    inset: auto 0 0 0;
+    width: auto;
+    height: auto;
+    clip: auto;
+    white-space: normal;
+    padding: 56px 12px 12px;
+    background: linear-gradient(to top, rgba(14, 14, 14, .94) 0%, rgba(14, 14, 14, .72) 55%, rgba(14, 14, 14, 0) 100%);
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.4;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .5);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity var(--base) var(--ease), transform var(--base) var(--ease);
+    pointer-events: none;
+  }
+  .film-tile-caption-text { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .film-card:hover .film-tile-caption,
+  .film-card:focus-visible .film-tile-caption { opacity: 1; transform: none; }
+}
+
+/* ==========================================================================
+   2. Listing pages (film-grid): head, tab strip, rows, grid
+   ========================================================================== */
+
+.page-head.cat-head { border: 0; padding-top: var(--s-7); padding-bottom: var(--s-5); }
+.cat-head .lead { max-width: 60ch; margin: 0; color: var(--fg-muted); }
+.cat-head .breadcrumb { margin-bottom: var(--s-3); }
+
+/* The tab strip: plain links, the current one underlined in gold. Scrolls sideways on a phone with no scrollbar showing. */
+.cat-tabs { position: relative; margin: 0 0 var(--s-7); border-bottom: 1px solid var(--rule); }
+.cat-tabs-list {
+  display: flex;
+  gap: var(--s-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+.cat-tabs-list::-webkit-scrollbar { display: none; }
+.cat-tabs-list li { flex: none; scroll-snap-align: start; }
+.cat-tabs .cat-tab {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 0 var(--s-3);
+  margin-bottom: -1px;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: .01em;
+  white-space: nowrap;
+  color: var(--fg-muted);
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  transition: color var(--fast) var(--ease), border-color var(--fast) var(--ease);
+}
+.cat-tabs .cat-tab:hover { color: var(--fg); }
+.cat-tabs .cat-tab[aria-current="page"] { color: var(--fg); background: transparent; border-bottom-color: var(--gold); }
+.cat-tabs .cat-tab:focus-visible { outline-offset: -3px; border-radius: 4px; }
+/* Where the strip overflows, the edge with more tabs fades out. catalogue.js sets --fade-l and --fade-r. */
+.cat-tabs.is-js .cat-tabs-list {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 calc(var(--fade-l, 0) * 40px), #000 calc(100% - var(--fade-r, 0) * 40px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 calc(var(--fade-l, 0) * 40px), #000 calc(100% - var(--fade-r, 0) * 40px), transparent);
+}
+
+/* Rows on the All page: a heading, a "See all" link, then the grid. */
+.cat-group + .cat-group { margin-top: var(--s-8); }
+.cat-group-head, .rail-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3) var(--s-5); flex-wrap: wrap; margin-bottom: var(--s-5); }
+.cat-group-head h2, .rail-head h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(24px, 2.2vw, 32px); letter-spacing: -0.01em; }
+.rail-head-text { display: grid; gap: var(--s-1); min-width: 0; }
+.rail-intro { margin: 0; font-size: var(--fs-small); color: var(--fg-muted); max-width: 60ch; }
+
+/* "See all": a quiet Whitney link with a thin line arrow that moves on hover. Blue is the small second accent. */
+.cat-more, .rail-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--fg-muted);
+  text-decoration: none;
+  transition: color var(--fast) var(--ease);
+}
+.cat-more svg, .rail-more svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--fast) var(--ease); }
+.cat-more:hover, .rail-more:hover, .cat-more:focus-visible, .rail-more:focus-visible { color: var(--blue-soft); }
+body[data-tone="light"] .cat-more:hover, body[data-tone="light"] .rail-more:hover,
+body[data-tone="light"] .cat-more:focus-visible, body[data-tone="light"] .rail-more:focus-visible { color: var(--blue); }
+.cat-more:hover svg, .rail-more:hover svg { transform: translateX(3px); }
+
+/* The grid: six across on a large screen, two on a phone. Rows are spaced more than columns so titles read as belonging to the tile above. */
+.film-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--s-6) var(--s-4); }
+.film-grid--square { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+@media (max-width: 1280px) { .film-grid, .film-grid--square { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+@media (max-width: 1100px) { .film-grid, .film-grid--square { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 820px) { .film-grid, .film-grid--square { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .film-grid, .film-grid--square { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-5) var(--s-3); } }
+.film-grid-section .film-grid-empty { margin-top: var(--s-5); }
+
+/* ==========================================================================
+   3. Rails (film-rail): a strip of tiles that glides sideways
+   ========================================================================== */
+
+/* Tile width is one number so the arrows and snap points agree. */
+.rail-wrap { --tile-w: clamp(150px, 15vw, 216px); --tile-ratio: 1.5; --rail-pad: 8px; --fade-l: 0; --fade-r: 0; position: relative; }
+.rail-wrap:has(.rail--square) { --tile-ratio: 1; }
+.rail-wrap .rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--tile-w);
+  gap: var(--s-4);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--rail-pad);
+  /* Room above and to the sides so a lifted tile is not cut off by the scrolling box. */
+  padding: 14px var(--rail-pad) 10px;
+  margin: -14px calc(var(--rail-pad) * -1) 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+.rail-wrap .rail::-webkit-scrollbar { display: none; }
+.rail-wrap .rail > * { scroll-snap-align: start; }
+/* Edge fades: the side with more tiles fades to nothing. The amount is a number catalogue.js animates between 0 and 1. */
+@property --fade-l { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --fade-r { syntax: "<number>"; inherits: true; initial-value: 0; }
+.rail-wrap.is-js, .cat-tabs.is-js { transition: --fade-l var(--base) var(--ease), --fade-r var(--base) var(--ease); }
+.rail-wrap.is-js .rail {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 calc(var(--fade-l) * 64px), #000 calc(100% - var(--fade-r) * 64px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 calc(var(--fade-l) * 64px), #000 calc(100% - var(--fade-r) * 64px), transparent);
+}
+
+/* Arrow buttons: thin line chevrons in a glass circle, centred on the posters. They exist for a mouse,
+   so they are drawn only on a hover-capable screen of desktop width, and only when the rail has more to show. */
+.rail-arrow { display: none; }
+@media (hover: hover) and (min-width: 900px) {
+  .rail-arrow {
+    display: grid;
+    place-items: center;
+    position: absolute;
+    z-index: 3;
+    top: calc(var(--tile-w) * var(--tile-ratio) / 2);
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--glass-line);
+    background: var(--glass-strong);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    color: var(--fg);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--base) var(--ease), background var(--fast) var(--ease), color var(--fast) var(--ease);
+  }
+  .rail-arrow[hidden] { display: none; }
+  .rail-arrow--prev { left: -22px; }
+  .rail-arrow--next { right: -22px; }
+  .rail-wrap:hover .rail-arrow:not([hidden]),
+  .rail-wrap:focus-within .rail-arrow:not([hidden]),
+  .rail-arrow:focus-visible { opacity: 1; }
+  .rail-arrow:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .rail-arrow svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  body[data-tone="light"] .rail-arrow { background: rgba(255, 255, 255, .88); border-color: var(--line); box-shadow: var(--shadow-card); }
+}
+
+/* The thin blue line under the rail: the track is faint, the fill is as wide as the part in view and slides with the scroll. */
+.rail-progress { display: none; position: relative; height: 2px; margin-top: var(--s-3); background: var(--glass-line); border-radius: 2px; overflow: hidden; }
+.rail-wrap.is-js.has-overflow .rail-progress { display: block; }
+.rail-progress-fill { position: absolute; top: 0; bottom: 0; left: 0; width: 25%; border-radius: 2px; background: var(--blue-soft); will-change: transform, width; transition: width var(--fast) linear; }
+body[data-tone="light"] .rail-progress { background: var(--line); }
+body[data-tone="light"] .rail-progress-fill { background: var(--blue); }
+
+/* ==========================================================================
+   4. Episodes (episode-rows): 16:9 tiles with a glass number badge
+   ========================================================================== */
+
+.ep-head { margin-bottom: var(--s-4); }
+.ep-head .btn { align-self: center; }
+.ep-group-line { margin: 0 0 var(--s-2); max-width: 70ch; }
+.episodes .ep-grid {
+  list-style: none;
+  margin: var(--s-5) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 272px), 1fr));
+  gap: var(--s-6) var(--s-4);
+}
+.episodes .ep { display: grid; gap: var(--s-3); align-content: start; transition: transform var(--base) var(--ease); }
+.episodes .ep:hover,
+.episodes .ep:focus-within { transform: translateY(-6px); }
+.ep-tile { position: relative; border-radius: 6px; overflow: hidden; background: var(--surface); box-shadow: 0 0 0 1px transparent, 0 12px 32px -20px rgba(0, 0, 0, .6); transition: box-shadow var(--base) var(--ease); isolation: isolate; }
+.episodes .ep:hover .ep-tile,
+.episodes .ep:focus-within .ep-tile { box-shadow: 0 0 0 1px var(--glass-line), 0 24px 48px -16px rgba(0, 0, 0, .7); }
+body[data-tone="light"] .episodes .ep:hover .ep-tile,
+body[data-tone="light"] .episodes .ep:focus-within .ep-tile { box-shadow: 0 0 0 1px var(--line), 0 24px 48px -22px rgba(0, 0, 0, .3); }
+.ep-tile .ep-player { position: relative; aspect-ratio: 16 / 9; border-radius: 0; overflow: hidden; background: var(--dark-surface); }
+.ep-tile .ep-player img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; aspect-ratio: auto; transition: transform var(--base) var(--ease); }
+.episodes .ep:hover .ep-player img { transform: scale(1.04); }
+.ep-tile .ep-player iframe, .ep-tile .ep-player video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+/* The play button: a smaller white disc that grows a touch on hover. */
+.ep-tile .ep-play { width: 56px; height: 56px; box-shadow: 0 8px 24px rgba(0, 0, 0, .45); transition: transform var(--fast) var(--ease), opacity var(--fast) var(--ease); }
+.ep-tile .ep-play svg { width: 24px; height: 24px; margin-left: 3px; }
+.episodes .ep:hover .ep-play { transform: scale(1.08); }
+/* The number badge: a small glass pill in the top-left corner. Gone once the player is running. */
+.ep-badge {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 2;
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 10px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  line-height: 1;
+  color: #fff;
+  background: rgba(14, 14, 14, .42);
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: 999px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+.ep-player.is-playing ~ .ep-badge { display: none; }
+/* Under the tile: title in Calluna, then episode number and length in Whitney muted, then two lines of the summary. */
+.episode-text.ep-text { display: grid; gap: 4px; padding-inline: 2px; }
+.episode-text .ep-title { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 18px; line-height: 1.3; letter-spacing: 0; text-wrap: pretty; }
+.episode-text .ep-meta { margin: 0; display: flex; flex-wrap: wrap; gap: 0 var(--s-2); font-family: var(--sans); font-size: 14px; color: var(--fg-muted); }
+.episode-text .ep-meta span + span::before { content: "\00b7"; margin-right: var(--s-2); }
+.episode-text .ep-summary { font-size: 14px; line-height: 1.45; color: var(--fg-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.episode-text .ep-summary p { margin: 0; }
+.episode-text .ep-guide { font-size: 14px; }
+
+/* ==========================================================================
+   5. Reduced motion: nothing moves, the ring and the underline still show
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .film-card:hover, .film-card:focus-visible,
+  .episodes .ep:hover, .episodes .ep:focus-within,
+  .episodes .ep:hover .ep-player img, .episodes .ep:hover .ep-play,
+  .cat-more:hover svg, .rail-more:hover svg { transform: none; }
+  .film-tile-caption { transform: none; }
+  .rail-wrap .rail { scroll-behavior: auto; }
+}

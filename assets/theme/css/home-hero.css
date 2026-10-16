@@ -1,0 +1,161 @@
+/*
+  Home hero. Everything for the first screen of the home page lives here and nowhere else.
+  Plain words: the studio's reel plays full-bleed behind the page's heading. A dark shade
+  sits bottom-left (where the words are) and fades to clear top-right, so the footage shows
+  on the right. On a phone the footage takes the top half of the screen and the words sit
+  below it on black, so nothing fights.
+  Every rule starts with ".home-hero.hh" so it wins over the older home-hero rules in theme.css.
+*/
+
+.home-hero.hh {
+  --hh-black: #0E0E0E;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-items: end;
+  min-height: min(92vh, 900px);
+  background: var(--hh-black);
+  color: #fff;
+  overflow: clip;
+}
+
+/* ---------- The picture: a still first, then the reel on top of it ---------- */
+.home-hero.hh .hh-media { position: absolute; inset: 0; z-index: -1; overflow: hidden; background: var(--hh-black); }
+.home-hero.hh .hh-media img,
+.home-hero.hh .hh-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 50%; }
+.home-hero.hh .hh-media video { z-index: 1; background: transparent; }
+
+/* The shade: strongest in the bottom-left corner, clear at the top-right, plus a light
+   band along the top so the transparent header stays readable over a bright frame. */
+.home-hero.hh .hh-scrim {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(14,14,14,.55) 0, rgba(14,14,14,0) 22%),
+    radial-gradient(ellipse 85% 120% at 0% 100%, rgba(14,14,14,.94) 0%, rgba(14,14,14,.82) 28%, rgba(14,14,14,.45) 55%, rgba(14,14,14,0) 80%),
+    linear-gradient(to top, rgba(14,14,14,.85) 0, rgba(14,14,14,0) 38%);
+}
+
+/* ---------- The words ---------- */
+.home-hero.hh .hh-body {
+  position: relative; z-index: 3;
+  display: grid; gap: clamp(16px, 2vh, 24px); justify-items: start;
+  padding-top: calc(var(--header-h) + clamp(96px, 16vh, 180px));
+  padding-bottom: clamp(40px, 8vh, 96px);
+}
+.home-hero.hh .hh-eyebrow { margin: 0; color: rgba(255,255,255,.8); }
+.home-hero.hh .hh-title {
+  margin: 0;
+  max-width: 13ch;
+  font-family: var(--heading-face);
+  font-size: clamp(40px, 5.5vw, 76px);
+  font-weight: 400;            /* Calluna has one weight; a heavier one would be faked */
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  color: #fff;
+  text-shadow: 0 2px 30px rgba(0,0,0,.45);
+}
+.home-hero.hh .hh-sub {
+  margin: 0;
+  max-width: 50ch;
+  font-family: var(--sans);
+  font-size: clamp(18px, 1.35vw, 20px);
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255,255,255,.8);
+  text-shadow: 0 1px 18px rgba(0,0,0,.5);
+}
+.home-hero.hh .hh-actions { display: flex; flex-wrap: wrap; gap: 12px 16px; margin-top: clamp(4px, 1vh, 12px); }
+
+/* Buttons: first is solid white, second is a white outline. */
+.home-hero.hh .btn-primary { background: #fff; border-color: #fff; color: #111; }
+.home-hero.hh .btn-primary:hover { background: rgba(255,255,255,.86); border-color: rgba(255,255,255,.86); color: #111; }
+.home-hero.hh .btn-secondary { background: transparent; border-color: rgba(255,255,255,.7); color: #fff; }
+.home-hero.hh .btn-secondary:hover { background: rgba(255,255,255,.14); border-color: #fff; color: #fff; }
+
+/* The words settle in as the page opens. The still is the Hollywood sign, not the reel's
+   title card, so "Great Stories Unlock the Heart" appears once, as live text that search
+   engines can read; home-hero.js starts the reel just past its own title card. Skipped when
+   the visitor asked for less motion. */
+@keyframes hh-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.home-hero.hh .hh-title,
+.home-hero.hh .hh-sub,
+.home-hero.hh .hh-actions { animation: hh-rise .9s cubic-bezier(.2,.7,.2,1) both; animation-delay: .2s; }
+.home-hero.hh .hh-sub { animation-delay: .32s; }
+.home-hero.hh .hh-actions { animation-delay: .44s; }
+@media (prefers-reduced-motion: reduce) {
+  .home-hero.hh .hh-title, .home-hero.hh .hh-sub, .home-hero.hh .hh-actions { animation: none; opacity: 1; }
+}
+
+/* ---------- The turning mark: one turn every 90 seconds ---------- */
+.home-hero.hh .hh-emblem {
+  position: absolute; z-index: 3;
+  top: calc(var(--header-h) + clamp(24px, 4vh, 48px));
+  right: max(var(--gutter), calc((100% - var(--wide)) / 2 + var(--gutter)));
+  width: clamp(84px, 8vw, 128px); height: auto;
+  opacity: .3;
+  pointer-events: none;
+  animation: hh-turn 90s linear infinite;
+}
+@keyframes hh-turn { to { transform: rotate(360deg); } }
+
+/* ---------- Pause button: small, round, quiet until hovered or focused ---------- */
+.home-hero.hh .hh-toggle {
+  position: absolute; z-index: 4;
+  right: max(var(--gutter), calc((100% - var(--wide)) / 2 + var(--gutter)));
+  bottom: clamp(20px, 4vh, 36px);
+  width: 36px; height: 36px; padding: 0; margin: 0;
+  display: grid; place-items: center;
+  border: 1px solid rgba(255,255,255,.4); border-radius: 50%;
+  background: rgba(14,14,14,.4);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  color: #fff;
+  opacity: .45;
+  cursor: pointer;
+  /* The button's own text ("Pause" / "Play", written by main.js) stays for screen readers
+     only; the icon below is what people see. */
+  font-size: 0; line-height: 0; overflow: hidden;
+  transition: opacity .2s ease, background-color .2s ease;
+}
+.home-hero.hh .hh-toggle::before {
+  content: ""; display: block; width: 14px; height: 14px; background: currentColor;
+  -webkit-mask: var(--hh-icon) center / contain no-repeat; mask: var(--hh-icon) center / contain no-repeat;
+  /* pause: two bars */
+  --hh-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Crect x='2' y='1' width='3.6' height='12' rx='.8'/%3E%3Crect x='8.4' y='1' width='3.6' height='12' rx='.8'/%3E%3C/svg%3E");
+}
+.home-hero.hh .hh-toggle[data-state="paused"]::before {
+  /* play: a triangle, nudged right so it looks centred */
+  --hh-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3 1.2v11.6a.6.6 0 0 0 .9.5l9-5.8a.6.6 0 0 0 0-1L3.9.7A.6.6 0 0 0 3 1.2z'/%3E%3C/svg%3E");
+  transform: translateX(1px);
+}
+.home-hero.hh .hh-toggle:hover,
+.home-hero.hh .hh-toggle:focus-visible { opacity: 1; background: rgba(14,14,14,.7); }
+.home-hero.hh .hh-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* ---------- Phones: footage on top (55% of the screen), words below on black ---------- */
+@media (max-width: 767px) {
+  .home-hero.hh { display: block; min-height: 0; }
+  .home-hero.hh .hh-media { position: relative; inset: auto; z-index: 0; height: 55vh; height: 55svh; min-height: 300px; }
+  .home-hero.hh .hh-media img,
+  .home-hero.hh .hh-media video { object-position: 50% 50%; }
+  .home-hero.hh .hh-scrim {
+    background:
+      linear-gradient(to bottom, rgba(14,14,14,.55) 0, rgba(14,14,14,0) 24%),
+      linear-gradient(to top, var(--hh-black) 0, rgba(14,14,14,0) 30%);
+  }
+  .home-hero.hh .hh-emblem { display: none; }
+  .home-hero.hh .hh-body { padding-top: 8px; padding-bottom: 40px; gap: 16px; }
+  .home-hero.hh .hh-title { max-width: 11ch; }
+  .home-hero.hh .hh-actions { width: 100%; flex-direction: column; }
+  .home-hero.hh .hh-actions .btn { width: 100%; }
+  /* The button sits at the bottom-right corner of the footage. */
+  .home-hero.hh .hh-toggle { top: calc(max(55vh, 300px) - 36px - 14px); top: calc(max(55svh, 300px) - 36px - 14px); bottom: auto; right: var(--gutter); }
+}
+
+/* ---------- Less motion: no turning mark, no rise-in ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .home-hero.hh .hh-emblem { animation: none; }
+  .home-hero.hh .hh-title,
+  .home-hero.hh .hh-sub,
+  .home-hero.hh .hh-actions { animation: none; }
+}

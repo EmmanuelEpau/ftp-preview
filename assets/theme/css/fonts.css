@@ -1,0 +1,99 @@
+/*
+  fonts.css: FTP's licensed typefaces.
+  These are HCFM's licensed files, copied from FTP's own HubSpot file store on
+  16 October 2026 (275132.fs1.hubspotusercontent-na1.net/hubfs/275132/fonts/).
+  They must stay on HCFM properties only.
+  Weights follow the live site: Light 300, Book 400, Medium 500, Semibold 600,
+  Bold 700, Black 900. Calluna exists only in Regular (400).
+*/
+@font-face {
+  font-family: "Calluna";
+  src: url("../fonts/calluna-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Whitney";
+  src: url("../fonts/whitney-ssm-light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Whitney";
+  src: url("../fonts/whitney-ssm-light-italic.woff2") format("woff2");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Whitney";
+  src: url("../fonts/whitney-ssm-book.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Whitney";
+  src: url("../fonts/whitney-ssm-book-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Whitney";
+  src: url("../fonts/whitney-ssm-medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Whitney";
+  src: url("../fonts/whitney-ssm-medium-italic.woff2") format("woff2");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Whitney";
+  src: url("../fonts/whitney-ssm-semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Whitney";
+  src: url("../fonts/whitney-ssm-semibold-italic.woff2") format("woff2");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Whitney";
+  src: url("../fonts/whitney-ssm-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Whitney";
+  src: url("../fonts/whitney-ssm-bold-italic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Whitney";
+  src: url("../fonts/whitney-ssm-black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Whitney";
+  src: url("../fonts/whitney-ssm-black-italic.woff2") format("woff2");
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}

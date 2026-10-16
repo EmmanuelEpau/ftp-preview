@@ -1,0 +1,193 @@
+/*
+  strips.css: the press quote slider (press-strip module) and the laurel
+  marquee of awards (awards-strip module). Colours come from the tokens in
+  theme.css so both strips work on the dark ground and on the light tone.
+  Motion is removed for visitors who ask for less motion (theme.css already
+  switches off every animation and transition; the rules at the end lay the
+  strips out so they still read well standing still).
+*/
+
+/* ==========================================================================
+   Press quotes: one quote at a time in a frosted glass panel
+   ========================================================================== */
+.pq { position: relative; isolation: isolate; overflow: hidden; }
+/* A soft wash of blue and gold behind the glass, so the frosted panel has something to blur. */
+.pq::before, .pq::after { content: ""; position: absolute; z-index: -1; border-radius: 50%; pointer-events: none; filter: blur(90px); opacity: .45; }
+.pq::before { width: min(52vw, 640px); aspect-ratio: 1; left: -10%; top: -20%; background: var(--blue); }
+.pq::after { width: min(44vw, 540px); aspect-ratio: 1; right: -8%; bottom: -30%; background: var(--gold); opacity: .28; }
+body[data-tone="light"] .pq::before { opacity: .12; }
+body[data-tone="light"] .pq::after { opacity: .10; }
+
+.pq-heading { margin: 0 0 var(--s-6); font-family: var(--heading-face); font-weight: 400; font-size: var(--fs-h2); letter-spacing: -0.01em; }
+
+/* The glass panel */
+.pq-panel {
+  position: relative;
+  padding: clamp(28px, 4vw, 56px) clamp(22px, 4vw, 64px) clamp(20px, 2.6vw, 32px);
+  background: var(--glass);
+  border: 1px solid var(--glass-line);
+  border-radius: 14px;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 30px 80px -40px rgba(0, 0, 0, .6);
+}
+body[data-tone="light"] .pq-panel { background: rgba(255, 255, 255, .72); border-color: var(--line); box-shadow: 0 24px 60px -36px rgba(0, 0, 0, .25); }
+
+/* Stage: the quotes. Without JavaScript they stack as a list; with it they sit on top of one another and fade. */
+.pq-stage { position: relative; }
+.pq-mark { display: none; color: var(--fg-muted); margin-bottom: var(--s-4); }
+.pq-slide { margin: 0; }
+.pq-slide blockquote { margin: 0; }
+.pq-slide blockquote p {
+  margin: 0;
+  max-width: 32em;
+  font-family: var(--heading-face);
+  font-weight: 400;
+  font-size: clamp(24px, 2.4vw, 34px);
+  line-height: 1.28;
+  letter-spacing: -0.005em;
+  color: var(--fg);
+  text-wrap: pretty;
+}
+.pq-slide.is-long blockquote p { font-size: clamp(21px, 1.9vw, 27px); line-height: 1.34; }
+.pq-slide.is-xl blockquote p { font-size: clamp(18px, 1.5vw, 22px); line-height: 1.45; max-width: 38em; }
+
+/* Attribution: Whitney 500, uppercase, tracked, with a short gold rule before the name. */
+.pq-who { margin-top: var(--s-5); display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-1) var(--s-3); font-family: var(--sans); font-weight: 500; font-size: var(--fs-label); letter-spacing: .14em; text-transform: uppercase; line-height: 1.5; }
+.pq-who::before { content: ""; align-self: center; width: 28px; height: 1px; background: var(--gold); }
+body[data-tone="light"] .pq-who::before { background: var(--gold-large); }
+.pq-name { color: var(--fg); }
+.pq-role { color: var(--fg-muted); }
+.pq-source { color: var(--fg-muted); text-decoration-color: var(--glass-line); }
+.pq-source:hover { color: var(--fg); }
+
+/* Footer: progress line, then arrows, dots and the counter. */
+.pq-foot { margin-top: clamp(24px, 3vw, 40px); }
+.pq-progress { height: 2px; background: var(--glass-line); overflow: hidden; border-radius: 1px; }
+body[data-tone="light"] .pq-progress { background: var(--line); }
+.pq-fill { display: block; height: 100%; width: 100%; background: var(--gold); transform: scaleX(0); transform-origin: left center; will-change: transform; }
+body[data-tone="light"] .pq-fill { background: var(--gold-large); }
+.pq-nav { display: flex; align-items: center; gap: var(--s-2); margin-top: var(--s-3); }
+.pq-btn { display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0; margin: 0; cursor: pointer; background: transparent; border: 0; border-radius: 50%; color: var(--fg-muted); transition: color var(--fast) var(--ease), background var(--fast) var(--ease); }
+.pq-btn:hover { color: var(--fg); background: var(--glass); }
+.pq-btn svg { display: block; }
+.pq-dots { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; min-width: 0; }
+.pq-dot { display: grid; place-items: center; width: 22px; height: 28px; padding: 0; margin: 0; background: none; border: 0; cursor: pointer; }
+.pq-dot span { display: block; width: 7px; height: 7px; border-radius: 50%; background: var(--blue-soft); opacity: .6; transition: transform var(--fast) var(--ease), opacity var(--fast) var(--ease), background var(--fast) var(--ease); }
+.pq-dot:hover span { opacity: 1; transform: scale(1.2); }
+.pq-dot.is-active span { background: var(--gold); opacity: 1; transform: scale(1.3); }
+body[data-tone="light"] .pq-dot span { background: var(--blue); }
+body[data-tone="light"] .pq-dot.is-active span { background: var(--gold-large); }
+.pq-count { margin: 0 0 0 auto; padding-left: var(--s-3); font-family: var(--sans); font-weight: 500; font-size: var(--fs-label); letter-spacing: .14em; color: var(--fg-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pq-count [data-pq-now] { color: var(--fg); }
+
+/* Without JavaScript: a plain list of quotes separated by thin rules, no controls. */
+.pq:not(.is-js) .pq-foot { display: none; }
+.pq:not(.is-js) .pq-slide + .pq-slide { margin-top: var(--s-6); padding-top: var(--s-6); border-top: 1px solid var(--glass-line); }
+
+/* With JavaScript: the quotes share one spot; the active one fades in and rises a little.
+   The stage takes the height of the live quote (set by strips.js) and eases between heights, so a
+   short quote never leaves a hole where the longest one would sit. */
+.pq.is-js .pq-mark { display: block; }
+.pq.is-js .pq-stage { position: relative; min-height: 120px; transition: height 600ms var(--ease); }
+.pq.is-js .pq-slide { position: absolute; inset: 0 0 auto 0; opacity: 0; visibility: hidden; transform: translateY(14px); transition: opacity 700ms var(--ease), transform 700ms var(--ease), visibility 0s linear 700ms; }
+.pq.is-js .pq-slide.is-active { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.pq.is-js .pq-slide.is-leaving { transform: translateY(-10px); }
+
+@media (max-width: 720px) {
+  .pq-panel { border-radius: 10px; }
+  .pq-mark { width: 36px; height: 30px; }
+  .pq-who::before { width: 20px; }
+  .pq-btn { width: 40px; height: 40px; }
+  /* On a phone eighteen dots would wrap into a cloud, so the counter sits between the arrows instead. */
+  .pq-dots { display: none; }
+  .pq-nav { justify-content: center; gap: var(--s-4); }
+  .pq-count { margin: 0; padding: 0; order: 0; }
+  .pq-prev { order: -1; }
+  .pq-next { order: 1; }
+}
+
+/* ==========================================================================
+   Awards: laurel badges drifting in two rows
+   ========================================================================== */
+.lr { position: relative; overflow: hidden; }
+.lr-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.lr-head { max-width: 46em; margin-bottom: clamp(28px, 4vw, 48px); }
+.lr-head h2 { margin: 0 0 var(--s-3); font-family: var(--heading-face); font-weight: 400; font-size: var(--fs-h2); letter-spacing: -0.01em; }
+.lr-lead { margin: 0; font-size: var(--fs-lead); line-height: 1.45; color: var(--fg-muted); text-wrap: pretty; }
+
+/* Rows that drift. The strip fades out at both edges so badges appear and disappear softly. */
+.lr-marquee {
+  --lr-fade: clamp(32px, 8vw, 160px);
+  display: grid;
+  gap: var(--s-4);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--lr-fade), #000 calc(100% - var(--lr-fade)), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 var(--lr-fade), #000 calc(100% - var(--lr-fade)), transparent);
+}
+.lr-row { display: flex; overflow: hidden; }
+.lr-track { list-style: none; margin: 0; padding: 0; display: flex; flex: none; align-items: center; animation: lr-drift var(--lr-loop, 120s) linear infinite; will-change: transform; }
+.lr-row--reverse .lr-track { animation-direction: reverse; }
+@keyframes lr-drift { to { transform: translateX(-100%); } }
+/* Stop while the pointer rests on the strip, while keyboard focus is inside it, and (set by strips.js) while it is off screen. */
+.lr-marquee:hover .lr-track, .lr-marquee:focus-within .lr-track, .lr-marquee.is-paused .lr-track { animation-play-state: paused; }
+
+/* One badge: text sitting inside a thin gold laurel. Text only; nothing boxed. */
+.lr-item { flex: none; padding-inline: clamp(4px, 1vw, 14px); }
+.lr-badge {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 236px;
+  height: 110px;
+  padding: 14px 44px 18px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--base) var(--ease);
+}
+a.lr-badge:hover { transform: translateY(-3px) scale(1.03); }
+a.lr-badge:focus-visible { outline-offset: -2px; border-radius: 12px; }
+.lr-wreath { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--gold); opacity: .9; pointer-events: none; }
+body[data-tone="light"] .lr-wreath { color: var(--gold-large); }
+.lr-text { position: relative; display: grid; gap: 4px; min-width: 0; }
+.lr-name { font-family: var(--heading-face); font-weight: 400; font-size: 17px; line-height: 1.12; color: var(--fg); text-wrap: balance; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+/* Long festival names step down a size and may take a third line, so nothing is cut short. */
+.lr-name.is-long { font-size: 14px; -webkit-line-clamp: 3; }
+.lr-sub, .lr-year { font-family: var(--sans); font-weight: 500; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; line-height: 1.3; color: var(--fg-muted); }
+.lr-sub { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.lr-year { color: var(--fg); opacity: .8; }
+
+/* Film page: a few badges, standing still, each with its category written under the laurel. */
+.lr-grid { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--s-4) var(--s-2); margin-inline: calc(var(--s-2) * -1); }
+.lr--film .lr-head { margin-bottom: var(--s-5); }
+.lr-grid .lr-item { display: grid; justify-items: center; gap: var(--s-1); width: 236px; padding-inline: 0; }
+.lr-caption { display: block; max-width: 200px; text-align: center; font-size: var(--fs-small); line-height: 1.35; color: var(--fg-muted); text-wrap: balance; }
+
+@media (max-width: 720px) {
+  .lr-marquee { gap: var(--s-2); }
+  .lr-badge { width: 200px; height: 96px; padding: 12px 36px 14px; }
+  .lr-name { font-size: 15px; }
+  .lr-name.is-long { font-size: 12.5px; }
+  .lr-sub, .lr-year { font-size: 10px; letter-spacing: .12em; }
+  /* Two badges to a row on a phone. */
+  .lr-grid { gap: var(--s-4) 0; margin-inline: 0; justify-content: space-between; }
+  .lr-grid .lr-item { width: calc(50% - 6px); }
+  .lr-grid .lr-badge { width: 100%; max-width: 172px; height: 84px; padding: 10px 28px 12px; }
+  .lr-grid .lr-name { font-size: 13px; }
+  .lr-grid .lr-name.is-long { font-size: 11.5px; }
+  .lr-grid .lr-sub, .lr-grid .lr-year { font-size: 9px; }
+  .lr-caption { font-size: 13px; max-width: 160px; }
+}
+
+/* Less motion: the rows stop and become one wrapped grid; the duplicate copy, kept only for the seamless loop, is dropped. */
+@media (prefers-reduced-motion: reduce) {
+  .lr-marquee { display: block; -webkit-mask-image: none; mask-image: none; }
+  .lr-row { display: contents; }
+  .lr-track { animation: none; flex-wrap: wrap; justify-content: center; }
+  .lr-track[aria-hidden="true"] { display: none; }
+  .lr-row--reverse .lr-track { margin-top: var(--s-3); }
+  .lr-item { padding-inline: var(--s-1); }
+  .pq.is-js .pq-slide, .pq.is-js .pq-slide.is-leaving { transform: none; transition: none; }
+  .pq::before, .pq::after { display: none; }
+}
