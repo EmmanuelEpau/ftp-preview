@@ -1,0 +1,56 @@
+/*
+  partners.css: the "Watch our films on" strip (partners-strip module).
+  Plain words: one quiet row of platform names, set as small capitals and separated by thin
+  vertical rules, each with the title that streams there in small type underneath. No logos,
+  no boxes. Under the row, one sentence in live text names them all for search and answer
+  engines. The row is compact so it adds little scrolling between the rails and the featured film.
+*/
+.partners { padding-block: clamp(28px, 3.4vw, 44px); border-block: 1px solid var(--rule); }
+.partners-heading {
+  margin: 0 0 var(--s-5);
+  font-family: var(--heading-face); font-weight: 400;
+  font-size: var(--fs-h2); line-height: 1.1; letter-spacing: -0.01em;
+}
+.partners-row {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; align-items: stretch;
+}
+.partners-row li { flex: 1 1 0; min-width: 0; display: flex; }
+.partners-row li + li { border-left: 1px solid var(--rule); }
+.partners-link {
+  flex: 1; display: grid; justify-items: center; align-content: center; gap: 4px;
+  padding: var(--s-3) var(--s-4);
+  text-align: center; text-decoration: none; color: var(--fg);
+  transition: transform var(--base) var(--ease), color var(--fast) var(--ease);
+}
+.partners-name {
+  font-family: var(--sans); font-weight: 600; font-size: 16px;
+  letter-spacing: .16em; text-transform: uppercase; line-height: 1.2;
+}
+.partners-film {
+  font-family: var(--heading-face); font-size: 15px; line-height: 1.25; color: var(--fg-muted);
+}
+.partners-link:hover, .partners-link:focus-visible { transform: translateY(-2px); }
+.partners-link:hover .partners-name, .partners-link:focus-visible .partners-name { color: var(--blue-soft); }
+body[data-tone="light"] .partners-link:hover .partners-name,
+.band--light .partners-link:hover .partners-name { color: var(--blue); }
+.partners-line { margin: var(--s-5) 0 0; font-size: var(--fs-small); line-height: 1.5; color: var(--fg-muted); max-width: none; text-wrap: pretty; }
+.partners-line a { color: var(--fg); text-decoration-color: var(--rule-input); }
+.partners-line a:hover { color: var(--blue-soft); }
+
+@media (max-width: 900px) {
+  /* Four to a row: a thin rule to the left of every item that is not first in its row, and one above the second row. */
+  .partners-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .partners-row li, .partners-row li + li { border-left: 1px solid var(--rule); }
+  .partners-row li:nth-child(4n+1) { border-left: 0; }
+  .partners-row li:nth-child(n+5) { border-top: 1px solid var(--rule); }
+}
+@media (max-width: 560px) {
+  /* Two to a row on a phone. */
+  .partners-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .partners-row li, .partners-row li + li { border-left: 1px solid var(--rule); border-top: 0; }
+  .partners-row li:nth-child(2n+1) { border-left: 0; }
+  .partners-row li:nth-child(n+3) { border-top: 1px solid var(--rule); }
+  .partners-name { font-size: 15px; }
+}
+@media (prefers-reduced-motion: reduce) { .partners-link:hover, .partners-link:focus-visible { transform: none; } }

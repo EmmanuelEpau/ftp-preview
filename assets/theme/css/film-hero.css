@@ -32,7 +32,7 @@
 .film-hero--composite .film-hero-body { position: relative; z-index: 1; display: grid; grid-template-columns: var(--hero-poster-w) minmax(0, 1fr); gap: 0 var(--hero-gap); align-items: start; padding-top: 0; padding-bottom: var(--s-8); max-width: var(--wide); }
 
 /* The poster rises into the picture, the way a streaming title page sets it. */
-.film-hero-poster { position: relative; z-index: 2; width: var(--hero-poster-w); aspect-ratio: 2 / 3; margin: calc(var(--hero-poster-w) * -0.62) 0 0; border-radius: 6px; overflow: hidden; background: var(--surface); box-shadow: 0 28px 56px -20px rgba(0,0,0,.85), 0 0 0 1px color-mix(in srgb, var(--fg) 14%, transparent); }
+.film-hero-poster { position: relative; z-index: 2; width: var(--hero-poster-w); aspect-ratio: 2 / 3; margin: calc(var(--hero-poster-w) * -0.34) 0 0; border-radius: 6px; overflow: hidden; background: var(--surface); box-shadow: 0 28px 56px -20px rgba(0,0,0,.85), 0 0 0 1px color-mix(in srgb, var(--fg) 14%, transparent); }
 .film-hero-poster img { width: 100%; height: 100%; object-fit: cover; }
 
 .film-hero-text { display: grid; gap: var(--s-3); justify-items: start; padding-top: var(--s-5); min-width: 0; }
@@ -70,7 +70,7 @@
 .film-hero--still .film-hero-media img { width: 100%; height: 100%; object-fit: cover; }
 /* Two gradients: one up from the bottom, one in from the left, so the words always sit on a dark field. */
 .film-hero--still .film-hero-shade { position: absolute; inset: 0; background: linear-gradient(to top, var(--dark) 0%, rgba(14,14,14,.78) 24%, rgba(14,14,14,.12) 58%, rgba(14,14,14,0) 100%), linear-gradient(to right, rgba(14,14,14,.82) 0%, rgba(14,14,14,.5) 38%, rgba(14,14,14,0) 64%); }
-.film-hero--still .film-hero-body { display: block; padding-top: calc(var(--header-h) + var(--s-9)); padding-bottom: var(--s-8); }
+.film-hero--still .film-hero-body { display: block; padding-top: var(--s-9); padding-bottom: var(--s-8); }
 .film-hero--still .film-hero-text { max-width: 56%; padding-top: 0; }
 .film-hero--still .film-hero-body h1 { text-shadow: 0 2px 24px rgba(0,0,0,.35); }
 
@@ -98,4 +98,32 @@
 @media (prefers-reduced-motion: no-preference) {
   .film-hero-poster { animation: hero-poster-rise .6s var(--ease) both; }
   @keyframes hero-poster-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+}
+
+/* ---------- Whole: the still is never cropped ----------
+   For stills with words burnt in (YouTube thumbnails): a blurred copy fills the band and the
+   sharp still stands whole at the right, its left edge fading into the blur. The page's words
+   stay below the band as in the composite layout, so nothing of the picture is covered or cut. */
+.film-hero--whole .film-hero-media { background: var(--bg); }
+.film-hero--whole .film-hero-media .film-hero-backdrop { position: absolute; inset: -60px; width: calc(100% + 120px); height: calc(100% + 120px); object-fit: cover; filter: blur(42px) saturate(1.1) brightness(.42); transform: none; }
+.film-hero--whole .film-hero-media .film-hero-whole {
+  position: absolute; top: 0; right: 0; height: 100%; width: auto; max-width: 100%; aspect-ratio: 16 / 9; object-fit: contain;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 14%), linear-gradient(to top, transparent 0, #000 8%);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, transparent 0, #000 14%), linear-gradient(to top, transparent 0, #000 8%); mask-composite: intersect;
+}
+/* The shade only darkens the blur's lower edge; the sharp still is not faded over its words. */
+.film-hero--whole .film-hero-shade { background: linear-gradient(to bottom, transparent 70%, var(--bg) 100%); z-index: 0; }
+.film-hero--whole .film-hero-media .film-hero-whole { z-index: 1; }
+@media (max-width: 767px) {
+  .film-hero--whole .film-hero-media { height: auto; aspect-ratio: 16 / 9; }
+  .film-hero--whole .film-hero-media .film-hero-whole { position: relative; width: 100%; height: auto; -webkit-mask-image: linear-gradient(to top, transparent 0, #000 10%); mask-image: linear-gradient(to top, transparent 0, #000 10%); }
+  .film-hero--whole .film-hero-media .film-hero-backdrop { display: none; }
+}
+
+/* The header now sits on its own bar above the still (film.html), so the dark wash that kept
+   menu links readable over the top of the picture is no longer needed. */
+.film-hero .film-hero-top { display: none; }
+@media (max-width: 767px) {
+  /* A whole still keeps its bottom edge (names, titles), so the words start below it, not on it. */
+  .film-hero--whole .film-hero-body { margin-top: var(--s-4); }
 }

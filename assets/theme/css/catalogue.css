@@ -347,3 +347,22 @@ body[data-tone="light"] .episodes .ep:focus-within .ep-tile { box-shadow: 0 0 0 
   .film-tile-caption { transform: none; }
   .rail-wrap .rail { scroll-behavior: auto; }
 }
+
+/* ==========================================================================
+   Header menu: six words, no drop-downs
+   ========================================================================== */
+
+/* The menu has six links now. On a laptop the search button already sits at the right of the bar, so the
+   plain "Search" word in the list is only for the phone menu (theme.css turns it back on there). */
+@media (min-width: 901px) {
+  .nav-main .search-link { display: none; }
+}
+/* Just above the phone breakpoint the six words need a little less air between them to stay on one line. */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .nav-main { gap: 0; }
+  .nav-main a { padding: 0 var(--s-2); }
+}
+
+/* Anchors the screen-reader-only "Opens on PBS" note inside each card. Without it the note is
+   positioned against the page, escapes the rail's scroll box and widens the page on phones. */
+.film-card { position: relative; }

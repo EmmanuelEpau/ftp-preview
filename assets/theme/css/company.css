@@ -93,6 +93,29 @@ body[data-tone="light"] .mission-band:not(.mission-band--photo) .mission-more a:
   .mission-link { margin-top: var(--s-4); }
 }
 
+/* Compact mission band: shorter, smaller heading, no forced height. Used near the top of a page. */
+.mission-band--compact { padding-block: clamp(36px, 4.5vw, 64px); }
+.mission-band--compact.mission-band--photo { min-height: 0; }
+.mission-band--compact .mission-grid { gap: clamp(24px, 4vw, 64px); }
+.mission-band--compact .mission-heading { font-size: clamp(30px, 3.4vw, 48px); line-height: 1.06; max-width: 16ch; }
+.mission-band--compact .mission-panel { padding: clamp(20px, 2.2vw, 32px); }
+.mission-band--compact .mission-text { font-size: clamp(18px, 1.5vw, 22px); }
+.mission-band--compact .mission-link { margin-top: var(--s-4); }
+/* A folded "more" text: the words are on the page, closed until opened. */
+.mission-fold { margin-top: var(--s-4); }
+.mission-fold summary { display: inline-block; cursor: pointer; color: var(--gold); font-weight: 600; letter-spacing: .02em; }
+body[data-tone="light"] .mission-band:not(.mission-band--photo) .mission-fold summary { color: var(--blue); }
+.mission-fold[open] summary { margin-bottom: var(--s-3); }
+.mission-fold .mission-more { margin-top: 0; padding-top: var(--s-4); }
+/* Button under the text (the careers and Instagram bands). The gold is the one accent of the band. */
+.mission-band .mission-cta { margin: var(--s-4) 0 0; }
+.mission-band .mission-cta .btn-primary { margin-top: 0; background: var(--gold); color: var(--ink); border-color: var(--gold); }
+.mission-band .mission-cta .btn-primary:hover { filter: brightness(1.06); }
+.mission-handle { margin: var(--s-3) 0 0; font-family: var(--sans); font-size: var(--fs-small); font-weight: 600; letter-spacing: .04em; color: var(--fg-muted); }
+/* Stage 2 placeholder: where HubSpot's social feed module will sit. Dashed so it reads as a marked space. */
+.stage-note { margin: 0; padding: var(--s-5); border: 1px dashed var(--glass-line); border-radius: 8px; color: var(--fg-muted); }
+body[data-tone="light"] .mission-band:not(.mission-band--photo) .stage-note { border-color: var(--line); }
+
 /* ---------- Our story: a horizontal line of dated moments ---------- */
 .story { padding-block: clamp(56px, 8vw, 112px); overflow: hidden; }
 .story-head { margin-bottom: var(--s-6); align-items: end; }

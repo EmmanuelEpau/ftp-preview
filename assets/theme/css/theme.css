@@ -46,16 +46,16 @@
   --fs-small: 15px;
   --fs-body: 18px;
   --fs-lead: clamp(19px, 1.5vw, 22px);
-  --fs-h3: clamp(21px, 1.7vw, 24px);
-  --fs-h2: clamp(28px, 2.6vw, 36px);
-  --fs-h1: clamp(34px, 3.6vw, 52px);
-  --fs-display: clamp(40px, 6.4vw, 92px);
+  --fs-h3: clamp(19px, 1.5vw, 22px);
+  --fs-h2: clamp(24px, 2.2vw, 31px);
+  --fs-h1: clamp(30px, 3.1vw, 44px);
+  --fs-display: clamp(36px, 5.4vw, 78px);
   --lh-body: 1.55;
   --lh-tight: 1.08;
 
   /* Space: an 8 px rhythm. */
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
-  --section: clamp(56px, 8vw, 112px);
+  --section: clamp(45px, 6.4vw, 90px);
 
   /* Layout: a wide container with natural side margins, the way professional sites do it. */
   --container: 1280px;
@@ -562,3 +562,36 @@ body[data-header="overlay"] .site-header.menu-open .logo-dark { display: none; }
 .band--glass-panel { background: var(--glass); border: 1px solid var(--glass-line); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-radius: 12px; }
 [data-tone="light"] .band--glass-panel { background: rgba(255,255,255,.72); border-color: var(--line); }
 .band--raised + .band--raised { border-top: 1px solid var(--rule); }
+
+/* ==========================================================================
+   Light band (16 Oct round 2). One white-paper band breaks up the black on
+   the home page. It is defined here once and any module that takes a `band`
+   field can use it (band--light). It re-sets the tone variables, so text,
+   cards, links and buttons inside it turn ink-on-paper while the rest of the
+   site stays dark. The selectors are doubled up (.blk.band.band--light) so they
+   beat the block token rules in blocks.css, which load later.
+   ========================================================================== */
+.band.band--light,
+.blk.band.band--light {
+  --bg: #F6F4EF;
+  --surface: #FFFFFF;
+  --fg: var(--ink);
+  --fg-muted: var(--ink-muted);
+  --rule: var(--line);
+  --rule-input: var(--line-input);
+  --btn-bg: var(--action);
+  --btn-fg: var(--on-action);
+  --link: var(--action);
+  --link-hover: var(--blue);
+  --focus: var(--action);
+  --panel: rgba(255, 255, 255, .8);
+  --panel-strong: #FFFFFF;
+  --panel-line: var(--line);
+  --panel-input: #FFFFFF;
+  --panel-sheen: rgba(255, 255, 255, .9);
+  --tile-shadow: 0 24px 40px -24px rgba(0, 0, 0, .28);
+  --glow: color-mix(in srgb, var(--blue) 9%, transparent);
+  background: var(--bg);
+  color: var(--fg);
+}
+.band--light .label { color: var(--fg-muted); }

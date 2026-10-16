@@ -18,12 +18,20 @@
 body[data-tone="light"] .pq::before { opacity: .12; }
 body[data-tone="light"] .pq::after { opacity: .10; }
 
-.pq-heading { margin: 0 0 var(--s-6); font-family: var(--heading-face); font-weight: 400; font-size: var(--fs-h2); letter-spacing: -0.01em; }
+/* Compact (16 Oct, round 2): the slider takes less height so people scroll less. The section
+   padding is about 60% of a normal section, the heading sits closer, and the quote mark moves
+   to the left of the quote instead of above it. */
+.pq.section { padding-block: calc(var(--section) * .6); }
+.pq-heading { margin: 0 0 var(--s-4); font-family: var(--heading-face); font-weight: 400; font-size: var(--fs-h2); letter-spacing: -0.01em; }
 
 /* The glass panel */
 .pq-panel {
   position: relative;
-  padding: clamp(28px, 4vw, 56px) clamp(22px, 4vw, 64px) clamp(20px, 2.6vw, 32px);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: clamp(14px, 2vw, 28px);
+  align-items: start;
+  padding: clamp(20px, 2.2vw, 28px) clamp(20px, 3vw, 44px) clamp(12px, 1.2vw, 16px);
   background: var(--glass);
   border: 1px solid var(--glass-line);
   border-radius: 14px;
@@ -35,25 +43,28 @@ body[data-tone="light"] .pq-panel { background: rgba(255, 255, 255, .72); border
 
 /* Stage: the quotes. Without JavaScript they stack as a list; with it they sit on top of one another and fade. */
 .pq-stage { position: relative; }
-.pq-mark { display: none; color: var(--fg-muted); margin-bottom: var(--s-4); }
+.pq-mark { display: none; grid-column: 1; grid-row: 1; width: 32px; height: 27px; margin-top: 4px; color: var(--fg-muted); }
+.pq-stage { grid-column: 2; grid-row: 1; }
+.pq-foot { grid-column: 1 / -1; }
+.pq:not(.is-js) .pq-stage { grid-column: 1 / -1; }
 .pq-slide { margin: 0; }
 .pq-slide blockquote { margin: 0; }
 .pq-slide blockquote p {
   margin: 0;
-  max-width: 32em;
+  max-width: 46em;
   font-family: var(--heading-face);
   font-weight: 400;
-  font-size: clamp(24px, 2.4vw, 34px);
-  line-height: 1.28;
+  font-size: clamp(18px, 1.6vw, 23px);
+  line-height: 1.32;
   letter-spacing: -0.005em;
   color: var(--fg);
   text-wrap: pretty;
 }
-.pq-slide.is-long blockquote p { font-size: clamp(21px, 1.9vw, 27px); line-height: 1.34; }
-.pq-slide.is-xl blockquote p { font-size: clamp(18px, 1.5vw, 22px); line-height: 1.45; max-width: 38em; }
+.pq-slide.is-long blockquote p { font-size: clamp(17px, 1.4vw, 20px); line-height: 1.38; }
+.pq-slide.is-xl blockquote p { font-size: clamp(15px, 1.15vw, 17px); line-height: 1.45; max-width: 56em; }
 
 /* Attribution: Whitney 500, uppercase, tracked, with a short gold rule before the name. */
-.pq-who { margin-top: var(--s-5); display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-1) var(--s-3); font-family: var(--sans); font-weight: 500; font-size: var(--fs-label); letter-spacing: .14em; text-transform: uppercase; line-height: 1.5; }
+.pq-who { margin-top: var(--s-3); display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-1) var(--s-3); font-family: var(--sans); font-weight: 500; font-size: var(--fs-label); letter-spacing: .14em; text-transform: uppercase; line-height: 1.5; }
 .pq-who::before { content: ""; align-self: center; width: 28px; height: 1px; background: var(--gold); }
 body[data-tone="light"] .pq-who::before { background: var(--gold-large); }
 .pq-name { color: var(--fg); }
@@ -62,16 +73,16 @@ body[data-tone="light"] .pq-who::before { background: var(--gold-large); }
 .pq-source:hover { color: var(--fg); }
 
 /* Footer: progress line, then arrows, dots and the counter. */
-.pq-foot { margin-top: clamp(24px, 3vw, 40px); }
+.pq-foot { margin-top: var(--s-3); }
 .pq-progress { height: 2px; background: var(--glass-line); overflow: hidden; border-radius: 1px; }
 body[data-tone="light"] .pq-progress { background: var(--line); }
 .pq-fill { display: block; height: 100%; width: 100%; background: var(--gold); transform: scaleX(0); transform-origin: left center; will-change: transform; }
 body[data-tone="light"] .pq-fill { background: var(--gold-large); }
-.pq-nav { display: flex; align-items: center; gap: var(--s-2); margin-top: var(--s-3); }
-.pq-btn { display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0; margin: 0; cursor: pointer; background: transparent; border: 0; border-radius: 50%; color: var(--fg-muted); transition: color var(--fast) var(--ease), background var(--fast) var(--ease); }
+.pq-nav { display: flex; flex-wrap: nowrap; align-items: center; gap: var(--s-2); margin-top: var(--s-1); }
+.pq-btn { display: inline-grid; place-items: center; width: 40px; height: 40px; padding: 0; margin: 0; cursor: pointer; background: transparent; border: 0; border-radius: 50%; color: var(--fg-muted); transition: color var(--fast) var(--ease), background var(--fast) var(--ease); }
 .pq-btn:hover { color: var(--fg); background: var(--glass); }
 .pq-btn svg { display: block; }
-.pq-dots { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; min-width: 0; }
+.pq-dots { display: flex; flex-wrap: nowrap; overflow: hidden; align-items: center; gap: 2px; min-width: 0; }
 .pq-dot { display: grid; place-items: center; width: 22px; height: 28px; padding: 0; margin: 0; background: none; border: 0; cursor: pointer; }
 .pq-dot span { display: block; width: 7px; height: 7px; border-radius: 50%; background: var(--blue-soft); opacity: .6; transition: transform var(--fast) var(--ease), opacity var(--fast) var(--ease), background var(--fast) var(--ease); }
 .pq-dot:hover span { opacity: 1; transform: scale(1.2); }
@@ -89,14 +100,17 @@ body[data-tone="light"] .pq-dot.is-active span { background: var(--gold-large); 
    The stage takes the height of the live quote (set by strips.js) and eases between heights, so a
    short quote never leaves a hole where the longest one would sit. */
 .pq.is-js .pq-mark { display: block; }
-.pq.is-js .pq-stage { position: relative; min-height: 120px; transition: height 600ms var(--ease); }
+.pq.is-js .pq-stage { position: relative; min-height: 56px; transition: height 600ms var(--ease); }
 .pq.is-js .pq-slide { position: absolute; inset: 0 0 auto 0; opacity: 0; visibility: hidden; transform: translateY(14px); transition: opacity 700ms var(--ease), transform 700ms var(--ease), visibility 0s linear 700ms; }
 .pq.is-js .pq-slide.is-active { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
 .pq.is-js .pq-slide.is-leaving { transform: translateY(-10px); }
 
 @media (max-width: 720px) {
   .pq-panel { border-radius: 10px; }
-  .pq-mark { width: 36px; height: 30px; }
+  /* On a phone the mark goes back above the quote so the words keep the full width. */
+  .pq-panel { grid-template-columns: minmax(0, 1fr); }
+  .pq-mark { grid-column: 1; grid-row: auto; width: 28px; height: 24px; margin: 0 0 var(--s-2); }
+  .pq-stage { grid-column: 1; grid-row: auto; }
   .pq-who::before { width: 20px; }
   .pq-btn { width: 40px; height: 40px; }
   /* On a phone eighteen dots would wrap into a cloud, so the counter sits between the arrows instead. */

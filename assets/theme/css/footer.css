@@ -1,0 +1,69 @@
+/*
+  footer.css: the sign-up row at the top of the site footer (16 Oct, round 2).
+  Plain words: the email sign-up used to be one small column among three. It is now a
+  full-width row of its own: a big heading and one line of promise on the left, one email
+  field and the gold button on the right. On a phone the heading sits on top and the field
+  and button stack underneath. The rest of the footer (logo line, link columns, legal line)
+  keeps its look from company.css. The gold button is the one gold thing on the footer screen.
+  The field keeps its id "footer-email" and name "email" so the sign-up test still finds it.
+*/
+
+.site-footer .ft-signup {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: var(--s-5) var(--s-8);
+  margin-bottom: var(--s-6);
+  padding: clamp(28px, 3.4vw, 48px) clamp(24px, 4vw, 56px);
+  background: var(--glass);
+  border: 1px solid var(--glass-line);
+  border-radius: 14px;
+}
+.site-footer .ft-signup-heading {
+  margin: 0 0 var(--s-2);
+  font-family: var(--heading-face);
+  font-weight: 400;
+  font-size: clamp(30px, 3vw, 44px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: var(--on-dark);
+}
+.site-footer .ft-signup .ft-promise { margin: 0; max-width: 40ch; font-size: 17px; line-height: 1.5; color: var(--on-dark-muted); }
+
+/* One email field and one button, side by side, both tall. */
+.site-footer .ft-signup .ft-form,
+.site-footer .ft-signup .hs-form-standin { display: flex; flex-wrap: nowrap; gap: var(--s-3); max-width: none; width: 100%; }
+.site-footer .ft-signup .ft-form input,
+.site-footer .ft-signup .hs-form-standin input {
+  flex: 1 1 auto; min-width: 0; min-height: 64px;
+  padding: 0 var(--s-5);
+  font: inherit; font-size: 18px;
+  color: var(--on-dark);
+  background: rgba(0, 0, 0, .35);
+  border: 1px solid var(--dark-line-input);
+  border-radius: var(--radius);
+}
+.site-footer .ft-signup .ft-form input::placeholder { color: var(--on-dark-muted); opacity: 1; }
+.site-footer .ft-signup .ft-form input:focus { outline: 0; border-color: var(--gold); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 35%, transparent); }
+.site-footer .ft-signup .btn-primary {
+  flex: none; min-height: 64px; padding-inline: var(--s-7);
+  background: var(--gold); border-color: var(--gold); color: #111;
+  font-size: 18px;
+}
+.site-footer .ft-signup .btn-primary:hover { filter: brightness(1.06); }
+
+/* The three columns under it: Projects, About and contact, Follow. */
+.site-footer .ft-columns { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.site-footer .ft-follow .ft-social { margin-top: 0; }
+
+@media (max-width: 900px) {
+  .site-footer .ft-signup { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  .site-footer .ft-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .site-footer .ft-follow { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .site-footer .ft-signup .ft-form,
+  .site-footer .ft-signup .hs-form-standin { flex-direction: column; }
+  .site-footer .ft-signup .ft-form input,
+  .site-footer .ft-signup .btn-primary { width: 100%; min-height: 56px; }
+}
